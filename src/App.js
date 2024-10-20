@@ -1,45 +1,25 @@
 import React, {useState} from 'react'
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import MainScreen from './components/MainScreen'
-import PlayerScreen from './components/PlayerScreen'
-import './styles.css'
+import ProductListPage from './pages/ProductListPage'
+import ThankYouPage from './pages/ThankYouPage'
+import './App.css'
 
-function App() {
-  const [players, setPlayers] = useState([])
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [winner, setWinner] = useState(null)
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('productList') // Track the current page
+  const [selectedProduct, setSelectedProduct] = useState(null) // Track selected product
 
-  const addPlayer = name => {
-    setPlayers(prevPlayers => [...prevPlayers, name])
-  }
-
-  const handleCorrectAnswer = name => {
-    setWinner(name)
-    setTimeout(() => {
-      setWinner(null)
-      setCurrentQuestion(prev => prev + 1)
-    }, 2000)
+  const handleViewProduct = product => {
+    setSelectedProduct(product)
+    setCurrentPage('thankYou')
   }
 
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/">
-          <MainScreen
-            players={players}
-            currentQuestion={currentQuestion}
-            winner={winner}
-          />
-        </Route>
-        <Route path="/player">
-          <PlayerScreen
-            currentQuestion={currentQuestion}
-            addPlayer={addPlayer}
-            handleCorrectAnswer={handleCorrectAnswer}
-          />
-        </Route>
-      </Switch>
-    </Router>
+    <div className="App">
+      {currentPage === 'productList' ? (
+        <ProductListPage onProductView={handleViewProduct} />
+      ) : (
+        <ThankYouPage product={selectedProduct} />
+      )}
+    </div>
   )
 }
 
